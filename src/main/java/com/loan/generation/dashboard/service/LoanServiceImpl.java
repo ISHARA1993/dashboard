@@ -40,7 +40,8 @@ public class LoanServiceImpl implements LoanService {
                 logger.info("isUENAvailable :{}", isUENAvailable);
                 if (!isUENAvailable) {
                     LoanApplication saveLoan=loanDao.save(loanApplication);
-                    loanPdfDao.save(new LoanPdfGeneration(saveLoan));
+                    String loRefNumber = "LO_BTL_"+saveLoan.getLoanAppId();
+                    loanPdfDao.save(new LoanPdfGeneration(loRefNumber,saveLoan));
                     return saveLoan;
                 } else {
                     logger.error("Company UEN Exist in DB");

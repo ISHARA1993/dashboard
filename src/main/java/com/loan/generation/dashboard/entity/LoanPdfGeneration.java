@@ -14,17 +14,21 @@ public class LoanPdfGeneration {
 
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "loan_gen_id")
     private long loanGenId;
 
+    @Column(name = "lo_ref_number")
+    private String loRefNumber;
 
-    @OneToOne(cascade = CascadeType.ALL)
+
+    @OneToOne
+    //@MapsId
     @JoinColumn(name = "loan_app_id")
-    @PrimaryKeyJoinColumn
     private LoanApplication loanApplication;
 
-    public LoanPdfGeneration(LoanApplication loanApplication) {
+    public LoanPdfGeneration(String loRefNumber, LoanApplication loanApplication) {
+        this.loRefNumber = loRefNumber;
         this.loanApplication = loanApplication;
     }
 }
