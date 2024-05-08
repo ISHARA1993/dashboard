@@ -24,5 +24,9 @@ public class LoanApplication {
     @Column(name = "loan_amount")
     private double loanAmount;
 
+//    @OneToOne
+//    @MapsId
+//    @JoinColumn(name = "loan_gen_id")
+//    private LoanPdfGeneration loanPdfGeneration;
 
 }
