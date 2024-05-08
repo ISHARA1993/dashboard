@@ -5,8 +5,6 @@ import com.loan.generation.dashboard.dao.LoanDao;
 import com.loan.generation.dashboard.dao.LoanPdfDao;
 import com.loan.generation.dashboard.entity.LoanApplication;
 import com.loan.generation.dashboard.entity.LoanPdfGeneration;
-import com.loan.generation.dashboard.exception.InvalidRequestException;
-import com.loan.generation.dashboard.exception.ResourceNotFoundException;
 import com.loan.generation.dashboard.response.FailedResponse;
 import com.loan.generation.dashboard.util.ResponseCode;
 import org.slf4j.Logger;
@@ -39,18 +37,18 @@ public class LoanServiceImpl implements LoanService {
                 boolean isUENAvailable = checkHENExist.test(loanApplication.getCompanyUen());
                 logger.info("isUENAvailable :{}", isUENAvailable);
                 if (!isUENAvailable) {
-                    LoanApplication saveLoan=loanDao.save(loanApplication);
-                    String loRefNumber = "LO_BTL_"+saveLoan.getLoanAppId();
-                    loanPdfDao.save(new LoanPdfGeneration(loRefNumber,saveLoan));
+                    LoanApplication saveLoan = loanDao.save(loanApplication);
+                    String loRefNumber = "LO_BTL_" + saveLoan.getLoanAppId();
+                    loanPdfDao.save(new LoanPdfGeneration(loRefNumber, saveLoan));
                     return saveLoan;
                 } else {
                     logger.error("Company UEN Exist in DB");
-                    return new FailedResponse(ResponseCode.FAILED_CODE_01,ResponseCode.FAILED_CODE_01_DESC);
+                    return new FailedResponse(ResponseCode.FAILED_CODE_01, ResponseCode.FAILED_CODE_01_DESC);
                 }
             }
         } catch (Exception e) {
             logger.error(e.toString());
-            return new FailedResponse(ResponseCode.FAILED_CODE_02,ResponseCode.FAILED_CODE_02_DESC);
+            return new FailedResponse(ResponseCode.FAILED_CODE_02, ResponseCode.FAILED_CODE_02_DESC);
         }
         return null;
     }
@@ -60,26 +58,25 @@ public class LoanServiceImpl implements LoanService {
         logger.info("LoanServiceImpl updateLoan Start:{}", updateLoanApplication);
         try {
             if (Objects.nonNull(updateLoanApplication) && updateLoanApplication.getLoanAppId() != 0) {
-                  if (Objects.nonNull(getLoanApplication.apply(updateLoanApplication.getLoanAppId()))) {
+                if (Objects.nonNull(getLoanApplication.apply(updateLoanApplication.getLoanAppId()))) {
                     return loanDao.save(updateLoanApplication);
-                  }
-                  else{
-                      return new FailedResponse(ResponseCode.FAILED_CODE_03,ResponseCode.FAILED_CODE_03_DESC);
-                  }
+                } else {
+                    return new FailedResponse(ResponseCode.FAILED_CODE_03, ResponseCode.FAILED_CODE_03_DESC);
+                }
             } else {
-                return new FailedResponse(ResponseCode.FAILED_CODE_04,ResponseCode.FAILED_CODE_04_DESC);
+                return new FailedResponse(ResponseCode.FAILED_CODE_04, ResponseCode.FAILED_CODE_04_DESC);
             }
         } catch (Exception e) {
             logger.error(e.toString());
-            return new FailedResponse(ResponseCode.FAILED_CODE_02,ResponseCode.FAILED_CODE_02_DESC);
+            return new FailedResponse(ResponseCode.FAILED_CODE_02, ResponseCode.FAILED_CODE_02_DESC);
         }
 
     }
 
 
-    public Predicate<String> checkHENExist = x -> (loanDao.checkCompanyUENCount(x) != 0);
+    Predicate<String> checkHENExist = uenNumber -> (loanDao.checkCompanyUENCount(uenNumber) != 0);
 
 
-    public LongFunction<LoanApplication> getLoanApplication= x->loanDao.findById(x).get();
+    LongFunction<LoanApplication> getLoanApplication = loanAppId -> loanDao.findById(loanAppId).get();
 
 }
