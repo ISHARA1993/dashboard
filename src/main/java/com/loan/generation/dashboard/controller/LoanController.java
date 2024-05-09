@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -30,8 +31,8 @@ public class LoanController {
 
 
     /*
-    * @http://localhost:8080/actuator
-    * */
+     * @http://localhost:8080/actuator
+     * */
     @GetMapping("/get-status")
     public ResponseEntity<LocalDate> getStatus() {
 
@@ -42,6 +43,7 @@ public class LoanController {
 
 
     @PostMapping("/create")
+    @KafkaListener(topics = "loan-creation-topic", groupId = "loan_group_id")
     public ResponseEntity<Object> createLoan(@RequestBody LoanApplication loanApplication) throws InternalServerException {
         logger.info("createLoan start :{}", loanApplication);
 
