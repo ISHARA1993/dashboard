@@ -6,6 +6,7 @@ import com.loan.generation.dashboard.dao.LoanPdfDao;
 import com.loan.generation.dashboard.entity.LoanApplication;
 import com.loan.generation.dashboard.entity.LoanPdfGeneration;
 import com.loan.generation.dashboard.response.FailedResponse;
+import com.loan.generation.dashboard.util.KafkaUtil;
 import com.loan.generation.dashboard.util.ResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,18 +31,14 @@ public class LoanServiceImpl implements LoanService {
 
     public static final Logger logger = LoggerFactory.getLogger(LoanServiceImpl.class);
 
-    @Autowired
-    KafkaTemplate<String, Object> kafkaTemplateLoSendResponse;
-
-    @KafkaListener(topics = "LO_GEN_TOPIC",groupId = "LO_GEN_GROUP")
-    public void listenToTopic(String receivedMessage){
-        System.out.printf("The message received is "+receivedMessage);
+    @KafkaListener(topics = "LO_GEN_TOPIC", groupId = "LO_GEN_GROUP")
+    public void listenToTopic(String receivedMessage) {
+        System.out.printf("The message received is " + receivedMessage);
 
     }
 
     @Override
     @Transactional
-
     public Object createLoan(LoanApplication loanApplication) {
         logger.info("LoanServiceImpl createLoan Start:{}", loanApplication);
         try {
@@ -52,24 +49,20 @@ public class LoanServiceImpl implements LoanService {
                     LoanApplication saveLoan = loanDao.save(loanApplication);
                     String loRefNumber = "LO_BTL_" + saveLoan.getLoanAppId();
                     loanPdfDao.save(new LoanPdfGeneration(loRefNumber, saveLoan));
-                    kafkaTemplateLoSendResponse.send("LO_GEN_TOPIC_RECEIVED",saveLoan);
                     return saveLoan;
                 } else {
                     logger.error("Company UEN Exist in DB");
-                    FailedResponse failedResponse= new FailedResponse(ResponseCode.FAILED_CODE_01, ResponseCode.FAILED_CODE_01_DESC);
-                    kafkaTemplateLoSendResponse.send("LO_GEN_TOPIC_RECEIVED",failedResponse);
-                    return failedResponse;
+                    return new FailedResponse(ResponseCode.FAILED_CODE_01, ResponseCode.FAILED_CODE_01_DESC);
 
                 }
             }
         } catch (Exception e) {
             logger.error(e.toString());
-            FailedResponse failedResponse= new FailedResponse(ResponseCode.FAILED_CODE_02, ResponseCode.FAILED_CODE_02_DESC);
-            kafkaTemplateLoSendResponse.send("LO_GEN_TOPIC_RECEIVED",failedResponse);
-            return failedResponse;
+            return new FailedResponse(ResponseCode.FAILED_CODE_02, ResponseCode.FAILED_CODE_02_DESC);
         }
         return null;
     }
+
 
     @Override
     public Object updateLoan(LoanApplication updateLoanApplication) {

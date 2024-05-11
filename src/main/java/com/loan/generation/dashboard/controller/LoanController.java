@@ -7,12 +7,14 @@ import com.loan.generation.dashboard.exception.InvalidRequestException;
 
 import com.loan.generation.dashboard.response.FailedResponse;
 import com.loan.generation.dashboard.service.LoanService;
+import com.loan.generation.dashboard.util.KafkaUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -29,6 +31,8 @@ public class LoanController {
     @Autowired
     private LoanService loanService;
 
+    @Autowired
+    KafkaTemplate<String, Object> kafkaTemplateLoSendResponse;
 
     /*
      * @http://localhost:8080/actuator
@@ -46,25 +50,33 @@ public class LoanController {
     @KafkaListener(topics = "loan-creation-topic", groupId = "loan_group_id")
     public ResponseEntity<Object> createLoan(@RequestBody LoanApplication loanApplication) throws InternalServerException {
         logger.info("createLoan start :{}", loanApplication);
+        Object object = null;
+        try {
 
-        Object object = loanService.createLoan(loanApplication);
-        logger.info("newLoanApplication :{}", object);
-        if (Objects.nonNull(object)) {
-            if (object instanceof LoanApplication newLoanApplication) {
-                logger.info("creation Success newLoanApplication:{} ", newLoanApplication);
-                return ResponseEntity.status(HttpStatus.OK).body(newLoanApplication);
-            } else if (object instanceof FailedResponse failedResponse) {
-                logger.info("creation Unsuccessful Failed:{} ", failedResponse);
-                return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(failedResponse);
+            object = loanService.createLoan(loanApplication);
+            logger.info("newLoanApplication :{}", object);
+            if (Objects.nonNull(object)) {
+                if (object instanceof LoanApplication newLoanApplication) {
+                    logger.info("creation Success newLoanApplication:{} ", newLoanApplication);
+                    return ResponseEntity.status(HttpStatus.OK).body(newLoanApplication);
+                } else if (object instanceof FailedResponse failedResponse) {
+                    logger.info("creation Unsuccessful Failed:{} ", failedResponse);
+                    return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(failedResponse);
+
+                } else {
+                    logger.error("Creation Unsuccessful");
+                    throw new InvalidRequestException("loanApplication didn't created");
+                }
 
             } else {
                 logger.error("Creation Unsuccessful");
-                throw new InvalidRequestException("loanApplication didn't created");
+                throw new InternalServerException("loanApplication didn't created");
             }
-
-        } else {
-            logger.error("Creation Unsuccessful");
-            throw new InternalServerException("loanApplication didn't created");
+        } finally {
+            if (Objects.nonNull(object)) {
+                logger.info("kafka send done");
+                kafkaTemplateLoSendResponse.send(String.valueOf(KafkaUtil.LO_GEN_TOPIC_RECEIVED), object);
+            }
         }
 
     }
