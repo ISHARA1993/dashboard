@@ -40,8 +40,24 @@ public class LoanController {
         return ResponseEntity.status(HttpStatus.OK).body(today);
     }
 
+    @GetMapping("/user/home")
+    public ResponseEntity<String> getUserAccess() {
 
-    @PostMapping("/create")
+        LocalDate today = LocalDate.now();
+        logger.info("getUserAccess date:{}", today);
+        return ResponseEntity.status(HttpStatus.OK).body("User :"+ today);
+    }
+
+    @GetMapping("/admin/home")
+    public ResponseEntity<LocalDate> getAdminHomeAccess() {
+
+        LocalDate today = LocalDate.now();
+        logger.info("getAdminHomeAccess date:{}", today);
+        return ResponseEntity.status(HttpStatus.OK).body(today);
+    }
+
+
+    @PostMapping("/admin/create")
     public ResponseEntity<Object> createLoan(@RequestBody LoanApplication loanApplication) throws InternalServerException {
         logger.info("createLoan start :{}", loanApplication);
 
@@ -67,7 +83,7 @@ public class LoanController {
 
     }
 
-    @PutMapping("/updateLoanApplication")
+    @PutMapping("/admin/updateLoanApplication")
     public ResponseEntity<Object> updateLoan(@RequestBody LoanApplication updateLoanApplication) throws InternalServerException {
         logger.info("updateLoan start :{}", updateLoanApplication);
 
