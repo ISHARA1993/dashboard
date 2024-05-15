@@ -3,7 +3,7 @@ package com.loan.generation.dashboard.util;
 public interface ResponseCode {
 
 
-    public static final String FAILED_CODE_01="01";
+    static final String FAILED_CODE_01="01";
     public static final String FAILED_CODE_01_DESC="Company UEN Exist in DB";
 
     public static final String FAILED_CODE_02="02";
