@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -30,8 +31,8 @@ public class LoanController {
 
 
     /*
-    * @http://localhost:8080/actuator
-    * */
+     * @http://localhost:8080/actuator
+     * */
     @GetMapping("/get-status")
     public ResponseEntity<LocalDate> getStatus() {
 
@@ -40,12 +41,18 @@ public class LoanController {
         return ResponseEntity.status(HttpStatus.OK).body(today);
     }
 
+
+    @GetMapping("/login")
+    public String handleLogin(){
+        return "custom_login";
+    }
+
     @GetMapping("/user/home")
     public ResponseEntity<String> getUserAccess() {
 
         LocalDate today = LocalDate.now();
         logger.info("getUserAccess date:{}", today);
-        return ResponseEntity.status(HttpStatus.OK).body("User :"+ today);
+        return ResponseEntity.status(HttpStatus.OK).body("User :" + today);
     }
 
     @GetMapping("/admin/home")

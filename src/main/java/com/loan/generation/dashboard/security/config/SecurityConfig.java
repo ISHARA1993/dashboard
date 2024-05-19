@@ -8,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -37,7 +36,9 @@ public class SecurityConfig {
                     registry.requestMatchers("/loan-dashboard/admin/**").hasRole("ADMIN");
                     registry.requestMatchers("/loan-dashboard/user/**").hasRole("USER");
                     registry.anyRequest().authenticated();
-                }).formLogin(AbstractAuthenticationFilterConfigurer::permitAll)//.formLogin(formLogin -> formLogin.permitAll())
+                }).formLogin(
+                        httpSecurityFormLoginConfigurer -> httpSecurityFormLoginConfigurer.loginPage("/loan-dashboard/login").permitAll()
+                )//.formLogin(formLogin -> formLogin.permitAll())
                 .build();
     }
 
