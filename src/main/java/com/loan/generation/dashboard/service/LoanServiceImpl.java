@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.LongFunction;
 import java.util.function.Predicate;
@@ -71,6 +72,16 @@ public class LoanServiceImpl implements LoanService {
             return new FailedResponse(ResponseCode.FAILED_CODE_02, ResponseCode.FAILED_CODE_02_DESC);
         }
 
+    }
+
+    @Override
+    public List<LoanApplication> getAllLoan() {
+        return loanDao.findAll();
+    }
+
+    @Override
+    public LoanApplication getById(long id) {
+        return getLoanApplication.apply(id);
     }
 
 

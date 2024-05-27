@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -40,6 +41,22 @@ public class LoanController {
         return ResponseEntity.status(HttpStatus.OK).body(today);
     }
 
+
+    @GetMapping("/getAllLoan")
+    public ResponseEntity<List<LoanApplication>> getAllLoan(){
+        logger.info("getAllLoan start");
+
+        List<LoanApplication> loanApplicationList =loanService.getAllLoan();
+        return ResponseEntity.status(HttpStatus.OK).body(loanApplicationList);
+    }
+
+    @GetMapping("/getLoan/{id}")
+    public ResponseEntity<LoanApplication> getAllLoan(@PathVariable long id){
+        logger.info("getAllLoan start");
+
+        LoanApplication loanApplication =loanService.getById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(loanApplication);
+    }
 
     @PostMapping("/create")
     public ResponseEntity<Object> createLoan(@RequestBody LoanApplication loanApplication) throws InternalServerException {
