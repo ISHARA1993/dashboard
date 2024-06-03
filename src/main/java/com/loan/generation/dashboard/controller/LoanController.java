@@ -43,7 +43,7 @@ public class LoanController {
 
     @PostMapping("/create")
     public ResponseEntity<Object> createLoan(@RequestBody LoanApplication loanApplication) throws InternalServerException {
-        logger.info("createLoan start :{}", loanApplication);
+        logger.debug("createLoan start :{}", loanApplication);
 
         Object object = loanService.createLoan(loanApplication);
         logger.info("newLoanApplication :{}", object);
