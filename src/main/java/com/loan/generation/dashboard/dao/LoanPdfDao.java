@@ -1,12 +1,9 @@
 package com.loan.generation.dashboard.dao;
 
-import com.loan.generation.dashboard.entity.LoanApplication;
 import com.loan.generation.dashboard.entity.LoanPdfGeneration;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.CrudRepository;
 
-@Repository
-public interface LoanPdfDao extends JpaRepository<LoanPdfGeneration, Long> {
+
+public interface LoanPdfDao extends CrudRepository<LoanPdfGeneration, Long> {
 
 }

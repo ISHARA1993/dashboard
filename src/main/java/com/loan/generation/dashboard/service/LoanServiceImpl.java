@@ -11,11 +11,11 @@ import com.loan.generation.dashboard.util.ResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.LongFunction;
 import java.util.function.Predicate;
@@ -31,11 +31,7 @@ public class LoanServiceImpl implements LoanService {
 
     public static final Logger logger = LoggerFactory.getLogger(LoanServiceImpl.class);
 
-    @KafkaListener(topics = "LO_GEN_TOPIC", groupId = "LO_GEN_GROUP")
-    public void listenToTopic(String receivedMessage) {
-        System.out.printf("The message received is " + receivedMessage);
 
-    }
 
     @Override
     @Transactional
@@ -82,6 +78,12 @@ public class LoanServiceImpl implements LoanService {
             return new FailedResponse(ResponseCode.FAILED_CODE_02, ResponseCode.FAILED_CODE_02_DESC);
         }
 
+    }
+
+    @Override
+    public List<LoanApplication> getAllData() {
+        List<LoanApplication> loanApplications= (List<LoanApplication>) loanDao.findAll();
+        return loanApplications;
     }
 
 
