@@ -30,9 +30,7 @@ public class LoanController {
     @Autowired
     private LoanService loanService;
 
-    /*
-     * @http://localhost:8080/actuator
-     * */
+
     @GetMapping("/get-status")
     public ResponseEntity<LocalDate> getStatus() {
 
@@ -44,7 +42,8 @@ public class LoanController {
 
     @GetMapping("/")
     public ResponseEntity<Object> getAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(loanService.getAllData());
+
+    /*        return ResponseEntity.status(HttpStatus.OK).body(loanService.getAllData());
     }
 
 
