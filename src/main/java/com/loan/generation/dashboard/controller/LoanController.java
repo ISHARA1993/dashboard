@@ -37,13 +37,36 @@ public class LoanController {
 
         LocalDate today = LocalDate.now();
         logger.info("getStatus date:{}", today);
+        logger.debug("debug test:{}", today);
         return ResponseEntity.status(HttpStatus.OK).body(today);
     }
 
 
-    @PostMapping("/create")
+    @GetMapping("/login")
+    public String handleLogin(){
+        return "custom_login";
+    }
+
+    @GetMapping("/user/home")
+    public ResponseEntity<String> getUserAccess() {
+
+        LocalDate today = LocalDate.now();
+        logger.info("getUserAccess date:{}", today);
+        return ResponseEntity.status(HttpStatus.OK).body("User :" + today);
+    }
+
+    @GetMapping("/admin/home")
+    public ResponseEntity<LocalDate> getAdminHomeAccess() {
+
+        LocalDate today = LocalDate.now();
+        logger.info("getAdminHomeAccess date:{}", today);
+        return ResponseEntity.status(HttpStatus.OK).body(today);
+    }
+
+
+    @PostMapping("/admin/create")
     public ResponseEntity<Object> createLoan(@RequestBody LoanApplication loanApplication) throws InternalServerException {
-        logger.debug("createLoan start :{}", loanApplication);
+        logger.info("createLoan start :{}", loanApplication);
 
         Object object = loanService.createLoan(loanApplication);
         logger.info("newLoanApplication :{}", object);
@@ -67,7 +90,7 @@ public class LoanController {
 
     }
 
-    @PutMapping("/updateLoanApplication")
+    @PutMapping("/admin/updateLoanApplication")
     public ResponseEntity<Object> updateLoan(@RequestBody LoanApplication updateLoanApplication) throws InternalServerException {
         logger.info("updateLoan start :{}", updateLoanApplication);
 
