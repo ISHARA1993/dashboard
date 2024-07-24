@@ -9,7 +9,6 @@ import com.loan.generation.dashboard.response.FailedResponse;
 import com.loan.generation.dashboard.service.LoanService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +24,14 @@ public class LoanController {
 
     public static final Logger logger = LoggerFactory.getLogger(LoanController.class);
 
-    @Autowired
-    private LoanService loanService;
+   // @Autowired //Filed Injection
+    //private LoanService loanService;
+
+    private final LoanService loanService;//constructor injection
+
+    public LoanController(LoanService loanService) {
+        this.loanService = loanService;
+    }
 
 
     /*
