@@ -73,6 +73,12 @@ public class LoanServiceImpl implements LoanService {
 
     }
 
+    @Override
+    public LoanApplication getLoan(long loanAppId) {
+        logger.info("LoanServiceImpl getLoan Start:{}", loanAppId);
+        return loanDao.findById(loanAppId).get();
+    }
+
 
     Predicate<String> checkHENExist = uenNumber -> (loanDao.checkCompanyUENCount(uenNumber) != 0);
 

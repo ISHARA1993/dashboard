@@ -40,6 +40,12 @@ public class LoanController {
         return ResponseEntity.status(HttpStatus.OK).body(today);
     }
 
+    @GetMapping("/get-loanApplication/{id}")
+    public ResponseEntity<LoanApplication> getLoanApplication(@PathVariable long id) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(loanService.getLoan(id));
+    }
+
 
     @PostMapping("/create")
     public ResponseEntity<Object> createLoan(@RequestBody LoanApplication loanApplication) throws InternalServerException {

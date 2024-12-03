@@ -8,4 +8,7 @@ public interface LoanService {
     Object createLoan(LoanApplication loanApplication);
 
     Object updateLoan(LoanApplication updateLoanApplication);
+
+    LoanApplication getLoan(long loanAppId);
+
 }
