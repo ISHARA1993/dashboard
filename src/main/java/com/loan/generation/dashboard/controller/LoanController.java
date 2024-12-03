@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -39,6 +40,13 @@ public class LoanController {
         logger.info("getStatus date:{}", today);
         return ResponseEntity.status(HttpStatus.OK).body(today);
     }
+
+    @GetMapping("/get-all-loanApplication")
+    public ResponseEntity<List<LoanApplication>> getAllLoanApplication() {
+
+        return ResponseEntity.status(HttpStatus.OK).body(loanService.getAllLoan());
+    }
+
 
     @GetMapping("/get-loanApplication/{id}")
     public ResponseEntity<LoanApplication> getLoanApplication(@PathVariable long id) {
